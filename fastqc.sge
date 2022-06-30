@@ -1,8 +1,8 @@
 #!/bin/bash
 #$ -cwd
-#$ -e /mnt/Timina/lmorales/jburdin/Khumilis/fastq/fastqc_Khumilis.err
-#$ -o /mnt/Timina/lmorales/jburdin/Khumilis/fastq/fastqc_Khumilis.out
-#$ -N fastqc_Khumilis
+#$ -e /mnt/Timina/lmorales/jburdin/Umaydis/fastq/fastqc_Umaydis.err
+#$ -o /mnt/Timina/lmorales/jburdin/Umaydis/fastq/fastqc_Umaydis.out
+#$ -N fastqc_Umaydis
 #$ -l vf=6G
 #$ -S /bin/bash
 #$ -m e
@@ -13,4 +13,3 @@
 module load fastqc/0.11.3
 #Run fastqc
 fastqc all_guppy.fastq
-
