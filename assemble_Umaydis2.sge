@@ -93,8 +93,8 @@ pilon --genome ./medaka2_ndf/consensus.fasta --bam pilon1_ndf/Umaydis_mapping_il
 #
 mkdir pilon2_ndf
 #
-bwa index ./pilon1_ndf/Khumilis_pilon1.fasta
-bwa mem -x ont2d ./pilon1_ndf/Khumilis_pilon1.fasta ../short_reads/Khumilis/YMX004033_R1_clean.fastq.gz ../short_reads/Khumilis/YMX004033_R2_clean.fastq.gz > pilon2_ndf/Umaydis_mapping_illumina2.sam
+bwa index ./pilon1_ndf/Umaydis_pilon1.fasta
+bwa mem -x ont2d ./pilon1_ndf/Umaydis_pilon1.fasta /mnt/Timina/lmorales/Public/Ustilago/C1/data/fastq/clean/2021EE04_T10.LC.C1_R1_clean.fq.gz /mnt/Timina/lmorales/Public/Ustilago/C1/data/fastq/clean/2021$
 #
 cd pilon2_ndf
 #
@@ -124,56 +124,5 @@ pilon --genome ./pilon2_ndf/Umaydis_pilon2.fasta --bam pilon3_ndf/Umaydis_mappin
 module load quast/4.6.3
 #
 quast.py -o quast_ndf -t 2 pilon3_ndf/Umaydis_pilon3.fasta
-
-echo -n 'Polishing with Pilon Illumina'
-#
-mkdir pilon4
-#
-bwa index ./medaka2/consensus.fasta
-bwa mem -x ont2d ./medaka2/consensus.fasta /mnt/Timina/lmorales/lgarcia/illumina/EM2KH1SS04_R1_clean.fastq.gz /mnt/Timina/lmorales/lgarcia/illumina/EM2KH1SS04_R2_clean.fastq.gz > pilon4/Khumilis_mapping_illumina.sam
-#
-cd pilon4
-#
-samtools view -bo Umaydis_mapping_illumina.bam Umaydis_mapping_illumina.sam
-samtools sort -@8 Umaydis_mapping_illumina.bam > Umaydis_mapping_illumina_sorted.bam
-samtools index Umaydis_mapping_illumina_sorted.bam
-#
-cd ..
-#
-pilon --genome ./medaka2/consensus.fasta --bam pilon4/Umaydis_mapping_illumina_sorted.bam --output Umaydis_pilon4 --outdir pilon4
-#
-mkdir pilon5
-#
-bwa index ./pilon4/Khumilis_pilon4.fasta
-bwa mem -x ont2d ./pilon4/Umaydis_pilon4.fasta /mnt/Timina/lmorales/lgarcia/illumina/EM2KH1SS04_R1_clean.fastq.gz /mnt/Timina/lmorales/lgarcia/illumina/EM2KH1SS04_R2_clean.fastq.gz > pilon5/Umaydis_mapping_illumina5.sam
-#
-cd pilon5
-#
-samtools view -bo Umaydis_mapping_illumina5.bam Umaydis_mapping_illumina5.sam
-samtools sort -@8 Umaydis_mapping_illumina5.bam > Umaydis_mapping_illumina5_sorted.bam
-samtools index Umaydis_mapping_illumina5_sorted.bam
-#
-cd ..
-#
-pilon --genome ./pilon4/Umaydis_pilon4.fasta --bam pilon5/Umaydis_mapping_illumina5_sorted.bam --output Umaydis_pilon5 --outdir pilon5
-#
-mkdir pilon6
-#
-bwa index ./pilon5/Umaydis_pilon5.fasta
-bwa mem -x ont2d ./pilon5/Umaydis_pilon5.fasta /mnt/Timina/lmorales/lgarcia/illumina/EM2KH1SS04_R1_clean.fastq.gz /mnt/Timina/lmorales/lgarcia/illumina/EM2KH1SS04_R2_clean.fastq.gz > pilon6/Umaydis_mapping_illumina6.sam
-#
-cd pilon6
-#
-samtools view -bo Umaydis_mapping_illumina6.bam Umaydis_mapping_illumina6.sam
-samtools sort -@8 Umaydis_mapping_illumina6.bam > Umaydis_mapping_illumina6_sorted.bam
-samtools index Umaydis_mapping_illumina6_sorted.bam
-#
-cd ..
-#
-pilon --genome ./pilon5/Umaydis_pilon5.fasta --bam pilon6/Umaydis_mapping_illumina6_sorted.bam --output Umaydis_pilon6 --outdir pilon6
-#
-module load quast/4.6.3
-
-quast.py -o quast_illumina -t 2 pilon6/Umaydis_pilon6.fasta
 
 
