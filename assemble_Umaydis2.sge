@@ -1,0 +1,123 @@
+#!/usr/bash/
+#$ -cwd
+#$ -e /mnt/Timina/lmorales/Public/OxfordNanopore/scripts/st/assemble_Umaydis.err
+#$ -o /mnt/Timina/lmorales/Public/OxfordNanopore/scripts/st/assemble_Umaydis.out
+#$ -N assemble_Umaydis
+#$ -l vf=16G
+#$ -S /bin/bash
+#$ -m e
+#$ -M iesedeno@gmail.com
+#$ -pe openmp 4
+. /etc/profile.d/modules.sh
+##Prerequisite for porechop
+conda deactivate
+module unload python37/3.7.0
+module load python35/3.5.2 gcc/5.1.0
+##Prerequisite for canu
+module load gnuplot/5.2.6
+##Prerequisite for pilon
+module load htslib/1.2.1
+##Actual modules used
+module load porechop/0.2.4 filtlong/0.2.0 canu/1.8 smartdenovo/11sep19 guppy/4.2.2 bwa/0.7.13 racon/1.4.3 anaconda3/4.2.0 samtools/1.9 pilon/1.23
+#
+#Umaydis
+cd /mnt/Timina/lmorales/Public/OxfordNanopore/Umaydis/
+#
+##echo 'Basecalling initialized'
+##mkdir fastq
+###
+##guppy_basecaller -i /mnt/Timina/lmorales/Public/OxfordNanopore/Umaydis/fast5/ -s ./fastq/ --flowcell FLO-MIN106 --kit SQK-LSK109
+###
+##echo 'Concatanating guppy output'
+##cat ./fastq/*.fastq > ./fastq/all_guppy.fastq
+###
+##echo 'Removing adapters from Umaydis'
+##mkdir porechop
+##porechop -i fastq/all_guppy.fastq -o porechop/no_adapters_Umaydis.fastq
+###
+##This cant run on a compute node.
+#echo 'Correcting Umaydis'
+#canu -correct -d corrected_Umaydis_ndf -p Umaydis genomeSize=19m useGrid=false -nanopore-raw ./porechop/no_adapters_Umaydis.fastq
+#
+#
+#echo -n 'Assembling Umaydis'
+#mkdir smartdenovo_ndf
+#gunzip ./corrected_Umaydis_ndf/Umaydis.correctedReads.fasta.gz
+#cd smartdenovo_ndf
+#smartdenovo.pl -p Umaydis_assembled ../corrected_Umaydis_ndf/Umaydis.correctedReads.fasta > Umaydis_assembled.mak
+#make -f Umaydis_assembled.mak
+#cd ..
+#echo -n 'Polishing Umaydis with Racon'
+#mkdir racon_ndf
+#cd racon_ndf
+#gzip ../porechop/no_adapters_Umaydis.fastq
+#bwa index ../smartdenovo_ndf/Umaydis_assembled.dmo.lay.utg
+#bwa mem -x ont2d ../smartdenovo_ndf/Umaydis_assembled.dmo.lay.utg ../porechop/no_adapters_Umaydis.fastq.gz > Umaydis_mapping_racon.sam
+#mv ../smartdenovo_ndf/Umaydis_assembled.dmo.lay.utg ../smartdenovo_ndf/Umaydis_assembled.fasta
+#racon ../porechop/no_adapters_Umaydis.fastq.gz Umaydis_mapping_racon.sam ../smartdenovo_ndf/Umaydis_assembled.fasta > Umaydis_polished_racon.fasta
+#cd ..
+#echo -n 'Polishing Umaydis with medaka'
+#source activate medaka-ssl
+#module unload python35/3.5.2
+####
+#echo -n 'Polish round 1'
+#medaka_consensus -i porechop/no_adapters_Umaydis.fastq.gz -d racon_ndf/Umaydis_polished_racon.fasta -o racon_medaka_ndf -t 4 -m r941_min_high_g360
+####
+#echo -n 'Polish round 2'
+#medaka_consensus -i porechop/no_adapters_Umaydis.fastq.gz -d racon_medaka_ndf/consensus.fasta -o medaka2_ndf -t 4 -m r941_min_high_g360
+####
+#conda deactivate
+###
+#module unload gnuplot/5.2.6 porechop/0.2.4 filtlong/0.2.0 canu/1.8 smartdenovo/11sep19 guppy/4.2.2 racon/1.4.3 anaconda3/4.2.0
+####
+#echo -n 'Polishing with Pilon'
+####
+#mkdir pilon1_ndf
+####
+#bwa index ./medaka2_ndf/consensus.fasta
+#bwa mem -x ont2d ./medaka2_ndf/consensus.fasta /mnt/Timina/lmorales/Public/Ustilago/C1/data/fastq/clean/2021EE04_T10.LC.C1_R1_clean.fq.gz /mnt/Timina/lmorales/Public/Ustilago/C1/data/fastq/clean/2021EE04_T10.LC.C1_R2_clean.fq.gz > pilon1_ndf/Umaydis_mapping_illumina.sam
+####
+#cd pilon1_ndf
+####
+#samtools view -bo Umaydis_mapping_illumina.bam Umaydis_mapping_illumina.sam
+#samtools sort -@8 Umaydis_mapping_illumina.bam > Umaydis_mapping_illumina_sorted.bam
+#samtools index Umaydis_mapping_illumina_sorted.bam
+####
+#cd ..
+####
+#pilon --genome ./medaka2_ndf/consensus.fasta --bam pilon1_ndf/Umaydis_mapping_illumina_sorted.bam --output Umaydis_pilon1 --outdir pilon1_ndf
+####
+mkdir pilon2_ndf
+###
+bwa index ./pilon1_ndf/Umaydis_pilon1.fasta
+bwa mem -x ont2d ./pilon1_ndf/Umaydis_pilon1.fasta /mnt/Timina/lmorales/Public/Ustilago/C1/data/fastq/clean/2021EE04_T10.LC.C1_R1_clean.fq.gz /mnt/Timina/lmorales/Public/Ustilago/C1/data/fastq/clean/2021EE04_T10.LC.C1_R2_clean.fq.gz > pilon2_ndf/Umaydis_mapping_illumina2.sam
+###
+cd pilon2_ndf
+###
+samtools view -bo Umaydis_mapping_illumina2.bam Umaydis_mapping_illumina2.sam
+samtools sort -@8 Umaydis_mapping_illumina2.bam > Umaydis_mapping_illumina2_sorted.bam
+samtools index Umaydis_mapping_illumina2_sorted.bam
+###
+cd ..
+###
+pilon --genome ./pilon1_ndf/Umaydis_pilon1.fasta --bam pilon2_ndf/Umaydis_mapping_illumina2_sorted.bam --output Umaydis_pilon2 --outdir pilon2_ndf
+###
+mkdir pilon3_ndf
+###
+bwa index ./pilon2_ndf/Umaydis_pilon2.fasta
+bwa mem -x ont2d ./pilon2_ndf/Umaydis_pilon2.fasta /mnt/Timina/lmorales/Public/Ustilago/C1/data/fastq/clean/2021EE04_T10.LC.C1_R1_clean.fq.gz /mnt/Timina/lmorales/Public/Ustilago/C1/data/fastq/clean/2021EE04_T10.LC.C1_R2_clean.fq.gz > pilon3_ndf/Umaydis_mapping_illumina3.sam
+###
+cd pilon3_ndf
+###
+samtools view -bo Umaydis_mapping_illumina3.bam Umaydis_mapping_illumina3.sam
+samtools sort -@8 Umaydis_mapping_illumina3.bam > Umaydis_mapping_illumina3_sorted.bam
+samtools index Umaydis_mapping_illumina3_sorted.bam
+###
+cd ..
+###
+pilon --genome ./pilon2_ndf/Umaydis_pilon2.fasta --bam pilon3_ndf/Umaydis_mapping_illumina3_sorted.bam --output Umaydis_pilon3 --outdir pilon3_ndf
+##
+module load quast/4.6.3
+###
+quast.py -o quast_ndf -t 2 pilon3_ndf/Umaydis_pilon3.fasta
+##
