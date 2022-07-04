@@ -93,8 +93,8 @@ pilon --genome ./medaka2_ndf/consensus.fasta --bam pilon1_ndf/Umaydis_mapping_il
 #
 mkdir pilon2_ndf
 #
-bwa index ./pilon1_ndf/Khumilis_pilon1.fasta
-bwa mem -x ont2d ./pilon1_ndf/Khumilis_pilon1.fasta ../short_reads/Khumilis/YMX004033_R1_clean.fastq.gz ../short_reads/Khumilis/YMX004033_R2_clean.fastq.gz > pilon2_ndf/Umaydis_mapping_illumina2.sam
+bwa index ./pilon1_ndf/Umaydis_pilon1.fasta
+bwa mem -x ont2d ./pilon1_ndf/Umaydis_pilon1.fasta /mnt/Timina/lmorales/Public/Ustilago/C1/data/fastq/clean/2021EE04_T10.LC.C1_R1_clean.fq.gz /mnt/Timina/lmorales/Public/Ustilago/C1/data/fastq/clean/2021$
 #
 cd pilon2_ndf
 #
