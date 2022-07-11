@@ -1,0 +1,19 @@
+#!/bin/bash
+#$ -cwd
+#$ -e /mnt/Timina/lmorales/jburdin/Umaydis/blast/blastK9_Umaydis.err
+#$ -o /mnt/Timina/lmorales/jburdin/Umaydis/blast/blastK9_Umaydis.out
+#$ -N blastK9_Umaydis
+#$ -l vf=10G
+#$ -S /bin/bash
+#$ -m e
+#$ -M jeanne.burdin.lfgeb@gmail.com
+#$ -pe openmp 4
+. /etc/profile.d/modules.sh
+#Module load
+module load blast+/2.7.1
+#
+#Database (First 38kbp of the chromosome 9 of Ustilago maydis)
+makeblastdb -38kbp-K9-Umaydis.fasta -dbtype nucl -out K9_ref
+#
+#Blast
+blastn -query Umaydis_pilon3.fasta -db K9_ref -outfmt 6 -out result_blast.txt
