@@ -1,0 +1,18 @@
+#!/bin/bash
+#$ -cwd
+#$ -e /mnt/Timina/lmorales/jburdin/Umaydis/mummer/mummerK9_Umaydis.err
+#$ -o /mnt/Timina/lmorales/jburdin/Umaydis/mummer/mummerK9_Umaydis.out
+#$ -N mummerK9_Umaydis
+#$ -l vf=10G
+#$ -S /bin/bash
+#$ -m e
+#$ -M jeanne.burdin.lfgeb@gmail.com
+#$ -pe openmp 4
+. /etc/profile.d/modules.sh
+#Module load
+module load mummer/3.23 gnuplot/5.2.6
+#MUMmer
+mummer -mum -b -c K9Umaydis.fasta Umaydis_pilon3.fasta > results.mums
+#Graphs
+mummerplot -postscript -p mummerK9  results.mums
+gnuplot mummerK9.gp
