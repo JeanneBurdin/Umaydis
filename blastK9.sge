@@ -12,7 +12,7 @@
 #Module load
 module load blast+/2.7.1
 #
-#Database (First 38kbp of the chromosome 9 of Ustilago maydis)
+#Database (First 38kbp of the chromosome 9 of Ustilago maydis, de préférence à faire dans le nodo principal au lieu du script)
 makeblastdb -38kbp-K9-Umaydis.fasta -dbtype nucl -out K9_ref
 #
 #Blast
