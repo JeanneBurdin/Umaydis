@@ -12,7 +12,7 @@
 #Module load
 module load mummer/3.23 gnuplot/5.2.6
 #MUMmer
-mummer -mum -b -c K9Umaydis.fasta Umaydis_pilon3.fasta > results.mums
+mummer -mum -b -c -l 100 K9Umaydis.fasta Umaydis_pilon3.fasta > results.mums
 #Graphs
 mummerplot -postscript -p mummerK9  results.mums
 gnuplot mummerK9.gp
