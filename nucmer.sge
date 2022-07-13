@@ -1,0 +1,20 @@
+#!/bin/bash
+#$ -cwd
+#$ -e /mnt/Timina/lmorales/jburdin/Umaydis/nucmer/nucmer_Umaydis.err
+#$ -o /mnt/Timina/lmorales/jburdin/Umaydis/nucmer/nucmer_Umaydis.out
+#$ -N nucmer_Umaydis
+#$ -l vf=10G
+#$ -S /bin/bash
+#$ -m e
+#$ -M jeanne.burdin.lfgeb@gmail.com
+#$ -pe openmp 4
+. /etc/profile.d/modules.sh
+#Module load
+module load mummer4/4.0 gnuplot/5.2.6
+#MUMmer
+nucmer --mum --p nucmer USMA_521_v2.fasta Umaydis_pilon3.fasta
+#Tableau récapitulatif
+show-coords -r -c -l nucmer.delta > nucmer.coords
+#Graphs
+mummerplot -postscript -p nucmer nucmer.delta
+gnuplot nucmer.gp
