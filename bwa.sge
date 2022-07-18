@@ -1,0 +1,21 @@
+#!/bin/bash
+#$ -cwd
+#$ -e /mnt/Timina/lmorales/jburdin/Umaydis/bwa/bwa_Umaydis.err
+#$ -o /mnt/Timina/lmorales/jburdin/Umaydis/bwa/bwa_Umaydis.out
+#$ -N bwa_Umaydis
+#$ -l vf=10G
+#$ -S /bin/bash
+#$ -m e
+#$ -M jeanne.burdin.lfgeb@gmail.com
+#$ -pe openmp 4
+. /etc/profile.d/modules.sh
+#Module load
+module load bwa/0.7.13
+module load samtools/1.9
+#bwa : index a reference and align the samples
+bwa index Umaydis_pilon3.fasta
+bwa mem -x ont2d Umaydis_pilon3.fasta no_adapters_Umaydis.fastq.gz > bwa_mem_alignments.sam
+#samtools : assesing mapping results
+samtools view -bo bwa_mem_alignments.bam bwa_mem_alignments.sam
+samtools sort -@8 bwa_mem_alignments.bam > bwa_mem_alignments.sorted.bam
+samtools index bwa_men_alignments.sorted.bam
