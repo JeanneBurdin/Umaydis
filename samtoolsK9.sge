@@ -1,0 +1,16 @@
+#!/bin/bash
+#$ -cwd
+#$ -e /mnt/Timina/lmorales/Public/OxfordNanopore/Umaydis/bam/samtools_Umaydis.err
+#$ -o /mnt/Timina/lmorales/Public/OxfordNanopore/Umaydis/bam/samtools_Umaydis.out
+#$ -N samtools_Umaydis
+#$ -l vf=10G
+#$ -S /bin/bash
+#$ -m e
+#$ -M jeanne.burdin.lfgeb@gmail.com
+#$ -pe openmp 4
+. /etc/profile.d/modules.sh
+#Module load
+module load samtools/1.9
+#samtools : assesing mapping results
+#samtools view -b UmaydisONTreads.USMA_521_v2_reference.bam USMA_521_v2_9 > UmaydisONTreads.U521_K9.bam 
+samtools index UmaydisONTreads.U521_K9.bam 
