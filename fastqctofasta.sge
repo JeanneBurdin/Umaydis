@@ -1,0 +1,15 @@
+#!/bin/bash
+#$ -cwd
+#$ -e /mnt/Timina/lmorales/jburdin/Umaydis/fastq/fastqctofasta_Umaydis.err
+#$ -o /mnt/Timina/lmorales/jburdin/Umaydis/fastq/fastqctofasta_Umaydis.out
+#$ -N fastqctofasta_Umaydis
+#$ -l vf=10G
+#$ -S /bin/bash
+#$ -m e
+#$ -M jeanne.burdin.lfgeb@gmail.com
+#$ -pe openmp 4
+. /etc/profile.d/modules.sh
+#Module load
+module load fastx/0.0.14
+#Run fastqc to fasta
+fastq_to_fasta -i all_guppy.fastq -o all_guppy.fasta
