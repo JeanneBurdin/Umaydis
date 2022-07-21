@@ -12,6 +12,9 @@
 #Module load
 module load samtools/1.9
 #samtools : assesing mapping results
+#Extraction du chromosome 9
 samtools view -b UmaydisONTreads.USMA_521_v2_reference.bam USMA_521_v2_9 > UmaydisONTreads.U521_K9.bam 
-samtools index UmaydisONTreads.U521_K9.bam 
 samtools depth -a UmaydisONTreads.U521_K9.bam > depth_alignments.depth
+#Extraction du chromosome 9 de 1 à 190000 paires de bases 
+samtools view -b UmaydisONTreads.USMA_521_v2_reference.bam USMA_521_v2_9:1-190000 > Umaydis.K9_1-190kb.bam 
+samtools depth -a Umaydis.K9_1-190kb.bam  > depth_alignments.depth
